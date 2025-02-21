@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/dsc-bot/fresh-data-service/config"
 	"github.com/dsc-bot/fresh-data-service/tasks"
@@ -23,34 +26,32 @@ func main() {
 		panic(fmt.Errorf("failed to create cron scheduler: %w", s_err))
 	}
 
-	// // debug job
-	// s.NewJob(gocron.CronJob("* * * * *", false), gocron.NewTask(func() {
-	// 	logger.Debug("Running Minute Job - Debugging")
-	// }))
+	if config.Conf.OneShot {
+		tasks.UpdateBotData()
+		tasks.UpdateInviteCodes()
+		return
+	}
 
-	// // add hourly fresh bot data
-	// s.NewJob(gocron.CronJob("0 * * * *", false), gocron.NewTask(func() {
-	// 	logger.Debug("Running Hourly Job - Bot Data")
-	// 	tasks.UpdateBotData()
-	// }))
+	// add hourly fresh bot data
+	s.NewJob(gocron.CronJob("0 * * * *", false), gocron.NewTask(func() {
+		utils.Logger.Debug("Running Hourly Job - Bot Data")
+		tasks.UpdateBotData()
+	}))
 
 	// add daily fresh invite data
-	// s.NewJob(gocron.CronJob("0 0 * * *", false), gocron.NewTask(func() {
-	// 	logger.Debug("Running Daily Job - Invite Data")
-	// 	tasks.UpdateInviteCodes()
-	// }))
+	s.NewJob(gocron.CronJob("0 0 * * *", false), gocron.NewTask(func() {
+		utils.Logger.Debug("Running Daily Job - Invite Data")
+		tasks.UpdateInviteCodes()
+	}))
 
 	// start the scheduler
 	utils.Logger.Info("Starting cron jobs")
 	s.Start()
 
-	tasks.UpdateBotData()
-	tasks.UpdateInviteCodes()
-
 	// keep alive until shutdown signal
-	// shutdownCh := make(chan os.Signal, 1)
-	// signal.Notify(shutdownCh, syscall.SIGINT, syscall.SIGTERM)
-	// <-shutdownCh
+	shutdownCh := make(chan os.Signal, 1)
+	signal.Notify(shutdownCh, syscall.SIGINT, syscall.SIGTERM)
+	<-shutdownCh
 
-	// logger.Info("Received shutdown signal")
+	utils.Logger.Info("Received shutdown signal")
 }
