@@ -47,7 +47,6 @@ type JAPIApplicationResponse struct {
 func FetchApplication(application_id string) (*JAPIApplicationResponse, error) {
 	resp, err := http.Get("https://japi.rest/discord/v1/application/" + application_id)
 	if err != nil {
-		Logger.Sugar().Errorf("failed to fetch japi application: %w", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -80,7 +79,6 @@ type JAPIInviteResponse struct {
 func FetchInvite(invite_code string) (*JAPIInviteResponse, error) {
 	resp, err := http.Get("https://japi.rest/discord/v1/invite/" + invite_code)
 	if err != nil {
-		Logger.Sugar().Errorf("failed to fetch japi invite: %w", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
