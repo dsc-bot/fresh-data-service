@@ -59,3 +59,36 @@ func FetchApplication(application_id string) (*JAPIApplicationResponse, error) {
 
 	return &response, nil
 }
+
+type GuildData struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Splash      string `json:"splash"`
+	Banner      string `json:"banner"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+}
+
+type JAPIInviteResponse struct {
+	Data struct {
+		Code      string    `json:"code"`
+		ExpiresAt time.Time `json:"expires_at"`
+		Guild     GuildData `json:"guild"`
+	} `json:"data"`
+}
+
+func FetchInvite(invite_code string) (*JAPIInviteResponse, error) {
+	resp, err := http.Get("https://japi.rest/discord/v1/invite/" + invite_code)
+	if err != nil {
+		Logger.Sugar().Errorf("failed to fetch japi invite: %w", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var response JAPIInviteResponse
+	res := json.NewDecoder(resp.Body)
+	res.DisallowUnknownFields()
+	res.Decode(&response)
+
+	return &response, nil
+}

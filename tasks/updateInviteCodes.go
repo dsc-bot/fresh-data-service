@@ -1,13 +1,12 @@
 package tasks
 
-// type InviteCode struct {
-// 	Avatar string `json:"avatar"`
-// }
-
-// type JAPIInviteResponse struct {
-// 	Data User
-// }
+import "github.com/dsc-bot/fresh-data-service/utils"
 
 func UpdateInviteCodes() {
+	req, err := utils.FetchInvite("NzUYWsfe")
+	if err != nil {
+		utils.Logger.Sugar().Errorf("failed to fetch japi application: %w", err)
+	}
 
+	utils.Logger.Debug(req.Data.Guild.Name)
 }

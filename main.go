@@ -45,6 +45,7 @@ func main() {
 	s.Start()
 
 	tasks.UpdateBotData()
+	tasks.UpdateInviteCodes()
 
 	// keep alive until shutdown signal
 	// shutdownCh := make(chan os.Signal, 1)
