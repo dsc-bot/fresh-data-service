@@ -53,8 +53,10 @@ func FetchApplication(application_id string) (*JAPIApplicationResponse, error) {
 
 	var response JAPIApplicationResponse
 	res := json.NewDecoder(resp.Body)
-	res.DisallowUnknownFields()
-	res.Decode(&response)
+	jerr := res.Decode(&response)
+	if jerr != nil {
+		return nil, jerr
+	}
 
 	return &response, nil
 }
@@ -85,8 +87,10 @@ func FetchInvite(invite_code string) (*JAPIInviteResponse, error) {
 
 	var response JAPIInviteResponse
 	res := json.NewDecoder(resp.Body)
-	res.DisallowUnknownFields()
-	res.Decode(&response)
+	jerr := res.Decode(&response)
+	if jerr != nil {
+		return nil, jerr
+	}
 
 	return &response, nil
 }
