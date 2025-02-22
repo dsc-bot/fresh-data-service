@@ -39,6 +39,7 @@ type AppData struct {
 
 type JAPIApplicationResponse struct {
 	Data struct {
+		Message     string  `json:"message,omitempty"`
 		Application AppData `json:"application"`
 		Bot         BotData `json:"bot"`
 	} `json:"data"`
