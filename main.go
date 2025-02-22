@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/dsc-bot/fresh-data-service/config"
+	"github.com/dsc-bot/fresh-data-service/db"
 	"github.com/dsc-bot/fresh-data-service/tasks"
 	"github.com/dsc-bot/fresh-data-service/utils"
 
@@ -16,10 +17,11 @@ import (
 func main() {
 	config.Parse()
 
-	err := utils.Configure(nil, config.Conf.JsonLogs, config.Conf.LogLevel)
-	if err != nil {
-		panic(fmt.Errorf("failed to create zap logger: %w", err))
+	lerr := utils.Configure(nil, config.Conf.JsonLogs, config.Conf.LogLevel)
+	if lerr != nil {
+		panic(fmt.Errorf("failed to create zap logger: %w", lerr))
 	}
+	db.Init()
 
 	s, s_err := gocron.NewScheduler()
 	if s_err != nil {
