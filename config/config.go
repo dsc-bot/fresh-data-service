@@ -10,7 +10,7 @@ type Config struct {
 	JsonLogs bool          `env:"JSON_LOGS" envDefault:"false"`
 	OneShot  bool          `env:"ONE_SHOT" envDefault:"false"`
 
-	DatabaseUri string `env:"DATABASE_URI"`
+	DatabaseUrl string `env:"DATABASE_URL"`
 }
 
 var Conf Config

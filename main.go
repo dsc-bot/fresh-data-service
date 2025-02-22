@@ -27,7 +27,9 @@ func main() {
 	}
 
 	if config.Conf.OneShot {
+		utils.Logger.Info("Running Job - Bot Data")
 		tasks.UpdateBotData()
+		utils.Logger.Info("Running Job - Invite Data")
 		tasks.UpdateInviteCodes()
 		return
 	}
