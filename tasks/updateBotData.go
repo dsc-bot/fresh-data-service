@@ -61,7 +61,12 @@ func UpdateBotListingData(bot *db.BotListing) bool {
 	bot.Fetched = time.Now().UTC()
 	if err != nil {
 		utils.Logger.Sugar().Errorf("failed to fetch japi application: %w", err)
-		bot.Flags = append(bot.Flags, "FRESH_DATA_ERROR")
+		if utils.ContainsString(bot.Flags, "FRESH_DATA_ERROR") {
+			bot.Flags = append(bot.Flags, "FRESH_DATA_BLOCKED")
+		} else {
+			bot.Flags = append(bot.Flags, "FRESH_DATA_ERROR")
+		}
+
 		return false
 	}
 
