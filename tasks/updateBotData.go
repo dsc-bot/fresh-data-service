@@ -28,14 +28,14 @@ func UpdateBotData() {
 			errors++
 		}
 
-		if err := db.UpdateBot(context.Background(), bot); err != nil {
-			dberrors += 1
-			utils.Logger.Sugar().Errorf("An error while updating bot %s: %w", bot.ListingId, err)
-		}
-
 		if total > 5 && errors > 5 && float64(errors)/float64(total) > 0.5 {
 			utils.Logger.Sugar().Errorf("Too many errors (updated %d, api error %d, db errors, %d), stopping...", updates, errors, dberrors)
 			break
+		}
+
+		if err := db.UpdateBot(context.Background(), bot); err != nil {
+			dberrors += 1
+			utils.Logger.Sugar().Errorf("An error while updating bot %s: %w", bot.ListingId, err)
 		}
 
 		if total > 5 && dberrors > 5 && float64(dberrors)/float64(total) > 0.5 {
