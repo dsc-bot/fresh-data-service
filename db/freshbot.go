@@ -72,5 +72,5 @@ func UpdateBot(ctx context.Context, bot BotListing) (err error) {
 	_, err = Pool.Exec(ctx, query,
 		bot.AppId,
 		bot.Username, bot.Discriminator, bot.Avatar, bot.Banner, bot.PrivacyPolicy, bot.TermsOfService, bot.Servers, bot.Store, bot.Fetched, bot.Flags)
-	return
+	return err
 }

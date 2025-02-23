@@ -13,6 +13,10 @@ import (
 var Pool *pgxpool.Pool
 
 func Init() {
+	if Pool != nil {
+		utils.Logger.Error("Database already initialized")
+		return
+	}
 	pool, err := pgxpool.New(context.Background(), config.Conf.DatabaseUrl)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
