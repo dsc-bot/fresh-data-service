@@ -15,32 +15,30 @@ func UpdateBotData() {
 		return
 	}
 
-	var updates int = 0
-	var errors int = 0
-	var dberrors int = 0
+	var total, updates, errors, dberrors int
 
 	for _, bot := range bots {
 		start := time.Now()
 
-		success := UpdateBotListingData(&bot)
-		if success {
-			updates += 1
+		total++
+
+		if UpdateBotListingData(&bot) {
+			updates++
 		} else {
-			errors += 1
+			errors++
 		}
 
-		err := db.UpdateBot(context.Background(), bot)
-		if err != nil {
+		if err := db.UpdateBot(context.Background(), bot); err != nil {
 			dberrors += 1
 			utils.Logger.Sugar().Errorf("An error while updating bot %s: %w", bot.ListingId, err)
 		}
 
-		if updates > 5 && errors > 5 && float64(errors)/float64(updates) > 0.5 {
+		if total > 5 && errors > 5 && float64(errors)/float64(total) > 0.5 {
 			utils.Logger.Sugar().Errorf("Too many errors (updated %d, api error %d, db errors, %d), stopping...", updates, errors, dberrors)
 			break
 		}
 
-		if updates > 5 && dberrors > 5 && float64(dberrors)/float64(updates) > 0.5 {
+		if total > 5 && dberrors > 5 && float64(dberrors)/float64(total) > 0.5 {
 			utils.Logger.Sugar().Errorf("Too many database errors (updated %d, api error %d, db errors, %d), stopping...", updates, errors, dberrors)
 			break
 		}
