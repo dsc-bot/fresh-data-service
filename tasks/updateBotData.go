@@ -68,7 +68,7 @@ func UpdateBotListingData(bot *db.BotListing) bool {
 	if req.Data.Message == "Unknown Application" {
 		utils.Logger.Sugar().Errorf("Unknown application for %s (%s)", bot.ListingId, bot.AppId)
 		bot.Flags = append(bot.Flags, "UNKNOWN_APPLICATION", "FRESH_DATA_BLOCKED", "VISIBILITY_REDUCED")
-		return false
+		return true
 	}
 
 	bot.Username = req.Data.Bot.Username
